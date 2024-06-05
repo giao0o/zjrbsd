@@ -1,9 +1,17 @@
+import datetime
 import requests
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
 
-# 测试单个URL
-url = "https://zjrb.zjol.com.cn/html/2022-06/30/zjrbindex.htm"
+# 生成所有日期
+start_date = datetime.date(2020, 1, 1)
+end_date = datetime.date(2024, 12, 31)
+
+date_list = [start_date + datetime.timedelta(days=x) for x in range((end_date - start_date).days + 1)]
+
+# 生成所有URL
+base_url = "https://zjrb.zjol.com.cn/html/{:%Y-%m/%d}/zjrbindex.htm"
+urls = [base_url.format(date) for date in date_list]
 
 def extract_content(url):
     try:
@@ -33,9 +41,10 @@ def extract_content(url):
 # 过滤包含“深读”的网页并提取内容
 filtered_pages = []
 
-content = extract_content(url)
-if content:
-    filtered_pages.append((url, content))
+for url in urls:
+    content = extract_content(url)
+    if content:
+        filtered_pages.append((url, content))
 
 # 创建一个Excel工作簿
 wb = Workbook()
@@ -47,7 +56,7 @@ ws.append(["日期", "URL", "内容"])
 
 # 添加数据
 for url, content in filtered_pages:
-    date_parts = url.split('/')[-4:-1]
+    date_parts = url.split('/')[-3:-1]
     date_str = '-'.join(date_parts)
     ws.append([date_str, url, content])
 
