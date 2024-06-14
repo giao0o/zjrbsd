@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from openpyxl import Workbook
 
 # 生成所有日期
-start_date = datetime.date(2020, 1, 1)
+start_date = datetime.date(2024, 1, 1)
 end_date = datetime.date(2024, 12, 31)
 
 date_list = [start_date + datetime.timedelta(days=x) for x in range((end_date - start_date).days + 1)]
